@@ -1,12 +1,12 @@
 package com.eliranshemtov;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class FileHandler {
+    private final static String metaPath = "meta.properties";
     public static String read(String filepath){
         App.logger.info("Reading file: '{}'", filepath);
         StringBuilder fileContent = new StringBuilder();
@@ -34,5 +34,34 @@ public class FileHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void updatePropsFile(byte[] digitalSignature, byte[] encryptedSecretKey, byte[] iv) throws IOException {
+        Properties props = new Properties();
+        props.setProperty("digitalSignature", Arrays.toString(digitalSignature));
+        props.setProperty("EncryptedEncryptionKey", Arrays.toString(encryptedSecretKey));
+        props.setProperty("IV", Arrays.toString(iv));
+
+        try (FileWriter fileWriter = new FileWriter(metaPath)){
+            props.store(fileWriter, "Encryption details");
+        };
+    }
+
+    public static Properties loadDecryptionProps() throws IOException {
+        File configFile = new File(metaPath);
+        Properties props = new Properties();
+        try (FileReader fileReader = new FileReader(configFile)) {
+            props.load(fileReader);
+        }
+        return props;
+    }
+
+    public static byte[] parsePropAsBytesArray(String prop){
+        String[] byteValues = prop.substring(1, prop.length() - 1).split(",");
+        byte[] bytes = new byte[byteValues.length];
+        for (int i=0, len=bytes.length; i<len; i++) {
+            bytes[i] = Byte.parseByte(byteValues[i].trim());
+        }
+        return bytes;
     }
 }
