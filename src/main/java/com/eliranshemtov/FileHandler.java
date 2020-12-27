@@ -3,52 +3,33 @@ package com.eliranshemtov;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Properties;
-import java.util.Scanner;
+
+import static com.eliranshemtov.Constants.*;
 
 public class FileHandler {
-    private final static String metaPath = "meta.properties";
-    public static String read(String filepath){
-        App.logger.info("Reading file: '{}'", filepath);
-        StringBuilder fileContent = new StringBuilder();
-        try {
-            File fileObj = new File(filepath);
-            Scanner fileReader = new Scanner(fileObj);
-            while (fileReader.hasNextLine()) {
-                fileContent.append(fileReader.nextLine());
-            }
-            fileReader.close();
-        } catch (FileNotFoundException e) {
-            App.logger.error("An error occurred while trying to read an input file:");
-            e.printStackTrace();
-        }
-        return fileContent.toString();
-    }
-
-    public static void write(String data, String filepath){
-        App.logger.info("Writing data into file: '{}'", filepath);
-        try {
-            FileWriter fileWriter = new FileWriter(filepath);
-            fileWriter.write(data);
-            fileWriter.close();
-            App.logger.info("Successfully wrote data to file: {}", filepath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void updatePropsFile(byte[] digitalSignature, byte[] encryptedSecretKey, byte[] iv) throws IOException {
+    public static void updatePropsFile(byte[] digitalSignature, byte[] encryptedSecretKey, byte[] iv,
+                                       String symmetricEncryptionAlgorithm,
+                                       String asymmetricTransformationForKeyEncryption,
+                                       String symmetricCipherTransformation,
+                                       String signatureAlgorithm) throws IOException {
+        App.logger.info("Saving properties into '{}' file...", META_PATH);
         Properties props = new Properties();
-        props.setProperty("digitalSignature", Arrays.toString(digitalSignature));
-        props.setProperty("EncryptedEncryptionKey", Arrays.toString(encryptedSecretKey));
-        props.setProperty("IV", Arrays.toString(iv));
+        props.setProperty(DIGITAL_SIGNATURE, Arrays.toString(digitalSignature));
+        props.setProperty(ENCRYPTED_ENCRYPTION_KEY, Arrays.toString(encryptedSecretKey));
+        props.setProperty(IV, Arrays.toString(iv));
+        props.setProperty(SYMMETRIC_ENCRYPTION_ALG, symmetricEncryptionAlgorithm);
+        props.setProperty(ASYMMETRIC_TRANSFORMATION_FOR_KEY_ENCRYPTION, asymmetricTransformationForKeyEncryption);
+        props.setProperty(SYMMETRIC_CIPHER_TRANSFORMATION, symmetricCipherTransformation);
+        props.setProperty(SIGNATURE_ALG, signatureAlgorithm);
 
-        try (FileWriter fileWriter = new FileWriter(metaPath)){
+        try (FileWriter fileWriter = new FileWriter(META_PATH)){
             props.store(fileWriter, "Encryption details");
-        };
+        }
     }
 
     public static Properties loadDecryptionProps() throws IOException {
-        File configFile = new File(metaPath);
+        App.logger.info("Loading decryption properties from config file '{}'", META_PATH);
+        File configFile = new File(META_PATH);
         Properties props = new Properties();
         try (FileReader fileReader = new FileReader(configFile)) {
             props.load(fileReader);
