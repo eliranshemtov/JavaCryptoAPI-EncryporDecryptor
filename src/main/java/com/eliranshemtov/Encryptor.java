@@ -8,7 +8,7 @@ import java.security.*;
 import static com.eliranshemtov.Constants.META_PATH;
 
 
-public class Encryptor {
+public class Encryptor implements Cryptor{
     private final KeysHandler keysHandler;
     private final String symmetricEncryptionAlgorithm;
     private final String symmetricTransformation;
@@ -17,9 +17,11 @@ public class Encryptor {
     private final SignatureHandler signatureHandler;
     private final SecretKey secretKey;
     private final String signatureAlgorithm;
+    private String inputFilePath;
 
-    public Encryptor(KeysHandler keysHandler, String signatureAlgorithm, String symmetricEncryptionAlgorithm, String symmetricTransformation, String asymmetricTransformationForKeyEncryption, String encryptedOutputPath) throws NoSuchAlgorithmException{
+    public Encryptor(KeysHandler keysHandler, String signatureAlgorithm, String symmetricEncryptionAlgorithm, String symmetricTransformation, String asymmetricTransformationForKeyEncryption, String inputFilePath, String encryptedOutputPath) throws NoSuchAlgorithmException{
         App.logger.info("Initializing Encryptor...");
+        this.inputFilePath = inputFilePath;
         this.keysHandler = keysHandler;
         this.symmetricEncryptionAlgorithm = symmetricEncryptionAlgorithm;
         this.symmetricTransformation = symmetricTransformation;
@@ -30,10 +32,10 @@ public class Encryptor {
         this.secretKey = generateSymmetricSecretKey();
     }
 
-    public void encrypt(String filepath) throws IOException, KeyStoreException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, UnrecoverableKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException {
-        App.logger.info("Encrypting the file in '{}'", filepath);
+    public void action() throws Throwable {
+        App.logger.info("Encrypting the file in '{}'", this.inputFilePath);
         Cipher cipher = initCipherForEncryption(this.secretKey);
-        try (InputStream inputStream = new FileInputStream(filepath);
+        try (InputStream inputStream = new FileInputStream(this.inputFilePath);
              OutputStream outputStream = new FileOutputStream(this.encryptedOutputPath)) {
             try (CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher)) {
                 byte[] input = new byte[cipher.getBlockSize()];
@@ -43,7 +45,7 @@ public class Encryptor {
                 }
             }
         }
-        FileHandler.updatePropsFile(this.signatureHandler.sign(filepath), RSAEncryptSymmetricSecretKey(), cipher.getIV(), this.symmetricEncryptionAlgorithm, this.asymmetricTransformationForKeyEncryption, this.symmetricTransformation, this.signatureAlgorithm);
+        FileHandler.updatePropsFile(this.signatureHandler.sign(this.inputFilePath), RSAEncryptSymmetricSecretKey(), cipher.getIV(), this.symmetricEncryptionAlgorithm, this.asymmetricTransformationForKeyEncryption, this.symmetricTransformation, this.signatureAlgorithm);
         App.logger.info("Done encrypting your file! You may send both '{}' and '{}' to your contact", this.encryptedOutputPath, META_PATH);
     }
 

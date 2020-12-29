@@ -8,26 +8,28 @@ import java.security.*;
 import java.util.Properties;
 import static com.eliranshemtov.Constants.*;
 
-public class Decryptor {
+public class Decryptor implements Cryptor{
     private final KeysHandler keysHandler;
     private final SignatureHandler signatureHandler;
     private final Properties properties;
+    private final String filePath;
 
-    public Decryptor(KeysHandler keysHandler) throws NoSuchAlgorithmException, IOException {
+    public Decryptor(KeysHandler keysHandler, String filePath) throws NoSuchAlgorithmException, IOException {
+        this.filePath = filePath;
         App.logger.info("Initializing Decryptor...");
         this.keysHandler = keysHandler;
         this.properties = FileHandler.loadDecryptionProps();
         this.signatureHandler = new SignatureHandler(keysHandler, this.properties.getProperty(SIGNATURE_ALG));
     }
 
-    public void decrypt(String filepath) throws Exception {
-        App.logger.info("Trying to decrypt the file '{}'...", filepath);
+    public void action() throws Throwable {
+        App.logger.info("Trying to decrypt the file '{}'...", this.filePath);
         Cipher cipher = initCipherForDecryption();
         byte[] digitalSignature = FileHandler.parsePropAsBytesArray(this.properties.getProperty(DIGITAL_SIGNATURE));
-        Boolean isSignatureValid = this.signatureHandler.verifySignature(filepath, digitalSignature, cipher);
+        Boolean isSignatureValid = this.signatureHandler.verifySignature(this.filePath, digitalSignature, cipher);
         if (isSignatureValid) {
             App.logger.info("Digital signature of the file is complete, will decrypt the file into '{}'", DECRYPTED_OUTPUT_PATH);
-            try (InputStream is = new FileInputStream(filepath); OutputStream out = new FileOutputStream(DECRYPTED_OUTPUT_PATH)) {
+            try (InputStream is = new FileInputStream(this.filePath); OutputStream out = new FileOutputStream(DECRYPTED_OUTPUT_PATH)) {
                 try (CipherInputStream cis = new CipherInputStream(is, cipher)) {
                     byte[] input = new byte[cipher.getBlockSize()];
                     int bytesRead;
