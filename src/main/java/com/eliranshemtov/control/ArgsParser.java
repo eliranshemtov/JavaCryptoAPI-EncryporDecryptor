@@ -1,8 +1,16 @@
-package com.eliranshemtov;
+package com.eliranshemtov.control;
 
 import org.apache.commons.cli.*;
 
 public class ArgsParser {
+    /**
+     * ArgsParser.parse - accepts an array of arguments and uses Apache.commons.cli to parse them.
+     * Separating arguments parsing like this allows the whole program to be much more testable.
+     * Operation mode (encrypt/decrypt/help) is mandatory.
+     * @param args array of strings to be parsed.
+     * @return Apache.common.cli.CommandLine object that allows easy parameter-extraction.
+     * @throws Throwable In order to reduce error handling code overhead, I decided to generalize this, as this is not the main focus of the exercise.
+     */
     public CommandLine parse( String[] args ) throws Throwable {
         Options options = new Options();
         options.addOption("h", "help", false, "List the command line arguments this app receives");

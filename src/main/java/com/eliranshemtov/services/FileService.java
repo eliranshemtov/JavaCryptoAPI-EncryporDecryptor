@@ -1,12 +1,14 @@
-package com.eliranshemtov;
+package com.eliranshemtov.services;
+
+import com.eliranshemtov.App;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Properties;
 
-import static com.eliranshemtov.Constants.*;
+import static com.eliranshemtov.control.Constants.*;
 
-public class FileHandler {
+public class FileService {
     public static void updatePropsFile(byte[] digitalSignature, byte[] encryptedSecretKey, byte[] iv,
                                        String symmetricEncryptionAlgorithm,
                                        String asymmetricTransformationForKeyEncryption,
@@ -27,7 +29,7 @@ public class FileHandler {
         }
     }
 
-    public static Properties loadDecryptionProps() throws IOException {
+    public static Properties loadDecryptionProps() throws Throwable {
         App.logger.info("Loading decryption properties from config file '{}'", META_PATH);
         File configFile = new File(META_PATH);
         Properties props = new Properties();

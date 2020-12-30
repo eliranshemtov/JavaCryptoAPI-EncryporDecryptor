@@ -1,7 +1,10 @@
-package com.eliranshemtov;
+package com.eliranshemtov.control;
 
 public final class Constants {
 
+    /**
+     * Constants file that should help avoiding typos and hardcoded strings in the app
+     */
     private Constants() {
         // restrict instantiation
     }
