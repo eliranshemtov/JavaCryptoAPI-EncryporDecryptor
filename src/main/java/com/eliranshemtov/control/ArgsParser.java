@@ -19,7 +19,7 @@ public class ArgsParser {
         options.addOption("p", "keystorePassword", true, "*** Password to the keystore");
         options.addOption("inf", "inputFile", true, "Input file (Encryption default: plaintext.txt | Decryption default: encrypted.enc)");
         options.addOption("ouf", "outputEncryptedFile", true, "[Encryption only] Output file for encrypted result (default: encrypted.enc");
-        options.addOption("k", "keystoreFile", true, "Keystore file to use (default: /Users/eliran.shemtov/.keystoreA.jks)");
+        options.addOption("k", "keystoreFile", true, "Keystore file to use (default for encrypt: keystores/.keystoreA.jks, default for decrypt: keystores/.keystoreB.jks)");
         options.addOption("mal", "myAlias", true, "My key's alias in the keystore (Encryption default: alice | Decryption default: bob)");
         options.addOption("mca", "contactAlias", true, "Contact cert alias in the keystore (Encryption default: bob | Decryption default: alice)");
         options.addOption("sa", "signatureAlg", true, "[Encryption only] Algorithm to be used for digital signature (default: SHA256withRSA)");

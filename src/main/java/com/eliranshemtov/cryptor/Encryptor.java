@@ -55,6 +55,13 @@ public class Encryptor implements Cryptor{
      * 4. digitally sign the input file's content
      * 5. encrypt the symmetric secret key
      * 6. write (4), (5), the IV, and algorithms / transformations into a config file, so that the decryptor could use them while decrypting.
+     *
+     * I generated a symmetric secret key. it is used for generating the Cipher, along with randomly chosen IV.
+     * this cipher is being used to create the cipherOutputStream. by reading the file using the cipherOutputStream, the chunks read are encrypted and written to the output file as required.
+     * Then I create a digital signature of the file's content using the signatureService.sign() method (which reads the file as cleartext and generates the signature, using my private key)
+     * Then I encrypt the symmetric secret key (RSA), with the contact's public key. so only he will be able to decrypt it using his private key.
+     * Both the signature, and the encrypted secret key, along with the IV and algorithms/transformations are written to the config file.
+     * There is no concern in writing them like this to the config file, as non of them but the secret key is confidential (and the secret key is encrypted).
      * @throws Throwable In order to reduce error handling code overhead, I decided to generalize this, as this is not the main focus of the exercise.
      */
     public void action() throws Throwable {
@@ -79,7 +86,7 @@ public class Encryptor implements Cryptor{
      * 1. get the contacts public key
      * 2. initialize a cipher with this.asymmetricTransformationForKeyEncryption and the contact's public key, for encryption mode
      * 3. encrypt the secret key and return it as byte array.
-     * @return
+     * @return byte[]
      * @throws Throwable In order to reduce error handling code overhead, I decided to generalize this, as this is not the main focus of the exercise.
      */
     private byte[] RSAEncryptSymmetricSecretKey () throws Throwable {

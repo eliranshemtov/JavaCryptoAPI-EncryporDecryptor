@@ -42,6 +42,15 @@ public class Decryptor implements Cryptor{
      * 5. read from the CipherInputStream chunk by chunk, update the signature object with it and write it to the output file.
      * 6. at the EndOfFile, verify the signature read from the config file (with the signature object got in 3.)
      * 7. if the signature verification failed, an error message will be written to the output file and to the console.
+     *
+     * I read the required configurations from the config file, as the encryptor wrote them.
+     * All of them are in cleartext, but the symmetric secret key, which we decrypt by using RSADecryptAESSymmetricKey() (with my private key)
+     * With that symmetric secret key, the IV and the transformation name (which are also written in the config file) we generate a cipher, and initialize it for decryption.
+     * That cipher is then given to the CipherInputStream that decrypts input stream on the run.
+     * Every chunk we read is updated in the digital signature object. After we decrypt the entire file (and update the signature object with it),
+     * We can use the retrieved signature object (which is initialized with the contact's public key)
+     * to verify that the signature of the content we just fed it with is equal to the signature that the encryptor wrote to the config file.
+     * if the signature verification fails we write an error message to the output file and throwing an exception (which will log an error to the console).
      * @throws Throwable In order to reduce error handling code overhead, I decided to generalize this, as this is not the main focus of the exercise.
      */
     public void action() throws Throwable {

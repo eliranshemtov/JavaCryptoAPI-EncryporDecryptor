@@ -22,14 +22,14 @@ public class Controller {
     /**
      * getCryptor extracts the parsed parameters that were given to the app. Then it constructs a Crypto object (Encryptor/Decryptor)
      * according to the parameters, and returns it ready for action.
-     * @return
+     * @return Cryptor
      * @throws Throwable In order to reduce error handling code overhead, I decided to generalize this, as this is not the main focus of the exercise.
      */
     public Cryptor getCryptor() throws Throwable {
         if (cmd.hasOption("encrypt")) {
             String inputFilePath = cmd.getOptionValue("inputFile", "plaintext.txt");
             String outPath = cmd.getOptionValue("outputEncryptedFile", "encrypted.enc");
-            String keystore = cmd.getOptionValue("keystoreFile", "/Users/eliran.shemtov/.keystoreA.jks");
+            String keystore = cmd.getOptionValue("keystoreFile", "keystores/.keystoreA.jks");
             String myAlias = cmd.getOptionValue("myAlias", "alice");
             String contactAlias = cmd.getOptionValue("contactAlias", "bob");
             String signatureAlg = cmd.getOptionValue("signatureAlg", "SHA256withRSA");
@@ -40,7 +40,7 @@ public class Controller {
             KeysService keysService = new KeysService(keystore, password, myAlias, contactAlias);
             return new Encryptor(keysService, signatureAlg, symmetricEncryptionAlg, symmetricTransformation, asymmetricTransformation, inputFilePath, outPath);
         } else if (cmd.hasOption("decrypt")) {
-            String keystore = cmd.getOptionValue("keystoreFile", "/Users/eliran.shemtov/.keystoreB.jks");
+            String keystore = cmd.getOptionValue("keystoreFile", "keystores/.keystoreB.jks");
             String myAlias = cmd.getOptionValue("myAlias", "bob");
             String contactAlias = cmd.getOptionValue("contactAlias", "alice");
             String filePath = cmd.getOptionValue("inputFile", "encrypted.enc");
@@ -50,7 +50,7 @@ public class Controller {
         } else {
             throw new Exception("No Operation mode was chosen");
         }
-    };
+    }
 
     /**
      * Mini helper function that verifies that a password was among the command line arguments. if was not present, throws and execption.
