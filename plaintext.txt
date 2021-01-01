@@ -1,13 +1,67 @@
-If you try to decrypt PKCS5-padded data with the wrong key, and then unpad it (which is done by the Cipher class automatically), you most likely will get the BadPaddingException (with probably of slightly less than 255/256, around 99.61%), because the padding has a special structure which is validated during unpad and very few keys would produce a valid padding.
-
-So, if you get this exception, catch it and treat it as "wrong key".
-
-This also can happen when you provide a wrong password, which then is used to get the key from a keystore, or which is converted into a key using a key generation function.
-
-Of course, bad padding can also happen if your data is corrupted in transport.
-
-That said, there are some security remarks about your scheme:
-
-For password-based encryption, you should use a SecretKeyFactory and PBEKeySpec instead of using a SecureRandom with KeyGenerator. The reason is that the SecureRandom could be a different algorithm on each Java implementation, giving you a different key. The SecretKeyFactory does the key derivation in a defined manner (and a manner which is deemed secure, if you select the right algorithm).
-
-Don't use ECB-mode. It encrypts each block independently, which means that identical plain text blocks also give always identical ciphertext blocks.
+Love, love, love
+Love, love, love
+Love, love, love
+There's nothing you can do that can't be done
+Nothing you can sing that can't be sung
+Nothing you can say, but you can learn how to play the game
+It's easy
+Nothing you can make that can't be made
+No one you can save that can't be saved
+Nothing you can do, but you can learn how to be you in time
+It's easy
+All you need is love
+All you need is love
+All you need is love, love
+Love is all you need
+All you need is love
+All you need is love
+All you need is love, love
+Love is all you need
+There's nothing you can know that isn't known
+Nothing you can see that isn't shown
+There's nowhere you can be that isn't where you're meant to be
+It's easy
+All you need is love
+All you need is love
+All you need is love, love
+Love is all you need
+All you need is love (all together now)
+All you need is love (everybody)
+All you need is love, love
+Love is all you need
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+Love is all you need
+(Love is all you need)
+(Love is all you need)
+(Love is all you need)
+(Love is all you need)
+Yesterday
+(Love is all you need)
+Oh
+Love is all you need
+Love is all you need
+Oh yeah
+Love is all you need
+(She love you, yeah, yeah, yeah)
+(She love you, yeah, yeah, yeah)
+(Love is all you need)
+(Love is all you need)
