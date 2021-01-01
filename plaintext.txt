@@ -1,0 +1,13 @@
+If you try to decrypt PKCS5-padded data with the wrong key, and then unpad it (which is done by the Cipher class automatically), you most likely will get the BadPaddingException (with probably of slightly less than 255/256, around 99.61%), because the padding has a special structure which is validated during unpad and very few keys would produce a valid padding.
+
+So, if you get this exception, catch it and treat it as "wrong key".
+
+This also can happen when you provide a wrong password, which then is used to get the key from a keystore, or which is converted into a key using a key generation function.
+
+Of course, bad padding can also happen if your data is corrupted in transport.
+
+That said, there are some security remarks about your scheme:
+
+For password-based encryption, you should use a SecretKeyFactory and PBEKeySpec instead of using a SecureRandom with KeyGenerator. The reason is that the SecureRandom could be a different algorithm on each Java implementation, giving you a different key. The SecretKeyFactory does the key derivation in a defined manner (and a manner which is deemed secure, if you select the right algorithm).
+
+Don't use ECB-mode. It encrypts each block independently, which means that identical plain text blocks also give always identical ciphertext blocks.
